@@ -1,0 +1,33 @@
+[tool.poetry]
+name = "nt-users-tool"
+version = "0.1.0"
+description = ""
+authors = ["Loïc Riegel <loic.riegel@outlook.fr>"]
+readme = "README.md"
+packages = [{include = "nt_users_tool", from = "src"}]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+
+[tool.poetry.scripts]
+ntuserstool = 'nt_users_tool.cli:main'
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry.dev-dependencies]
+pytest = "*"
+pytest-cov = "*"
+pytest-mock = "*"
+
+[tool.pytest.ini_options]
+testpaths = [
+    "tests/"
+]
+addopts = """\
+    --cov=./src \
+    --cov-report=html \
+    --cov-report html:./tests/coverage_report.html \
+"""
