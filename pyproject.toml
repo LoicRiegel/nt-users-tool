@@ -2,12 +2,13 @@
 name = "nt-users-tool"
 version = "0.1.0"
 description = ""
-authors = ["Loïc Riegel <loic.riegel@outlook.fr>"]
+authors = ["Anatole Mombrun <anatole.mombrun@gmail.com>"]
 readme = "README.md"
 packages = [{include = "nt_users_tool", from = "src"}]
 
 [tool.poetry.dependencies]
-python = "^3.10"
+python = "^3.8"
+openpyxl = "^3.0.10"
 
 [tool.poetry.scripts]
 ntuserstool = 'nt_users_tool.cli:main'
