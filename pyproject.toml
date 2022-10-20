@@ -1,8 +1,8 @@
-[tool.poetry]
++[tool.poetry]
 name = "nt-users-tool"
 version = "0.1.0"
 description = ""
-authors = ["Anatole Mombrun <anatole.mombrun@gmail.com>"]
+authors = ["Loïc Rigel <loic.riegel@outlook.fr>"]
 readme = "README.md"
 packages = [{include = "nt_users_tool", from = "src"}]
 
@@ -18,7 +18,7 @@ ntuserstool = 'nt_users_tool.cli:main'
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
 
-[tool.poetry.dev-dependencies]
+[tool.poetry.group.dev.dependencies]
 pytest = "*"
 pytest-cov = "*"
 pytest-mock = "*"
