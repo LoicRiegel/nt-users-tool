@@ -1,10 +1,15 @@
 from os import popen
+from concurrent.futures import Executor, ThreadPoolExecutor
 
 from typing import NamedTuple
 
 from constants import LAST_RELEVANT_ELEMENT_POSITION
 
 class NTUserInfo(NamedTuple):
+    """Dataclass for a user of the bosch network
+
+    :param NamedTuple: Full name, nt_user and expiration date (fetched from net user /domain)
+    """
     full_name: str
     nt_user: str
     expiration_date: str

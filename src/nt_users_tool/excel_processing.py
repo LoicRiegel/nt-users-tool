@@ -1,11 +1,8 @@
-from asyncore import read
 from openpyxl import Workbook, load_workbook
 from datetime import date
 
-from constants import FAKE_NET_COMMAND, FAKE_NET_COMMAND2, FAKE_NET_COMMAND3, FAKE_NET_COMMAND4, SHEET_ALL_USERS, SHEET_EXPIRED, SHEET_EXPIRES_SOON, SHEETS_NAME_LIST, COLUMNS_LIST, MONTHS_TO_EXPIRE
-from net_commands import NTUserInfo, extract_all_nt_user_info
-from read_config import read_config_file, get_config
-
+from constants import SHEET_ALL_USERS, SHEET_EXPIRED, SHEET_EXPIRES_SOON, SHEETS_NAME_LIST, COLUMNS_LIST, MONTHS_TO_EXPIRE, TWO_YEAR_GAP
+from net_commands import NTUserInfo
 
 def read_nt_users(worksheet) ->list:
     """Generates a list of nt_user found in the worksheet.
@@ -20,19 +17,13 @@ def read_nt_users(worksheet) ->list:
                 nt_user_id_list.append(cell.value)
     return nt_user_id_list
 
-def create_results_workbook(excel_desired_path: str, sheets_names_list: list):
-    """Creates the output excel file according to arguments
+def create_results_sheets(workbook: Workbook):
+    """Creates the sheets inside the given workbook according to parameter
 
-    Args:
-        excel_desired_path (str): Path where the output file should be located
-        sheets_names_list (list): Names of the sheets inside the file
+    :param workbook: The workbook in which to add the sheets.
     """
-    workbook = Workbook()
-    workbook.remove(workbook.active)
-    for sheet_name in sheets_names_list:
+    for sheet_name in SHEETS_NAME_LIST:
         workbook.create_sheet(sheet_name)
-    workbook.save(excel_desired_path)
-    workbook.close()
 
 def fill_one_row(worksheet, row_number: int, columns: list, nt_user_info: NTUserInfo):
     """Fills row_number of columns on the given worksheet, with the info in nt_user_info.
@@ -48,6 +39,11 @@ def fill_one_row(worksheet, row_number: int, columns: list, nt_user_info: NTUser
 
 
 def fill_all_sheets(workbook: Workbook, nt_user_info_list: list):
+    """Fills all sheets for the given workbook and nt_user info list (via fill_one_row).
+
+    :param workbook: The workbook which has all sheets to be modified.
+    :param nt_user_info_list: The list of NTUserInfo objects containing information.
+    """
     expired_users_sheet = workbook[SHEET_EXPIRED]
     expiring_soon_users_sheet = workbook[SHEET_EXPIRES_SOON]
     users_sheet = workbook[SHEET_ALL_USERS]
@@ -70,14 +66,16 @@ def fill_all_sheets(workbook: Workbook, nt_user_info_list: list):
             fill_one_row(expired_users_sheet, expired_index, COLUMNS_LIST, user)
             expired_index += 1
         elif user_year == now_year:
-            if user_month == now_month:
+            if user_month <= now_month:
+                fill_one_row(expired_users_sheet, expired_index, COLUMNS_LIST, user)
+                expired_index += 1
+            elif user_month == now_month:
                 fill_one_row(expired_users_sheet, expired_index, COLUMNS_LIST, user)
                 expired_index +=1
-            elif user_month - now_month <= MONTHS_TO_EXPIRE:
+            elif user_month - now_month < MONTHS_TO_EXPIRE:
                 fill_one_row(expiring_soon_users_sheet, expiring_index, COLUMNS_LIST, user)
                 expiring_index +=1
-
-        elif user_year > now_year:
+        elif user_year - now_year < TWO_YEAR_GAP:
             if now_month > user_month:
                 if (user_month - now_month)%12 <= MONTHS_TO_EXPIRE:
                     fill_one_row(expiring_soon_users_sheet, expiring_index, COLUMNS_LIST, user)

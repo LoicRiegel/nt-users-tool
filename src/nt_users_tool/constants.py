@@ -4,6 +4,7 @@ INPUT_FILE = "input_file_path"
 OUTPUT_FILE = "output_file_path"
 
 MONTHS_TO_EXPIRE = 3
+TWO_YEAR_GAP = 2
 
 SHEET_EXPIRED = "expired_users"
 SHEET_EXPIRES_SOON = "expiring_soon_users"
@@ -36,4 +37,9 @@ FAKE_NET_COMMAND3 = "The request will be processed at a domain controller for do
 FAKE_NET_COMMAND4 = "The request will be processed at a domain controller for domain de.bosch.com\
     \n\n\n\nUser name FET7RT Full Name Fesseler Timo (EB-DB/ENG3)\n\
     Comment 208489\nUser's comment 4975140\nCountry/region code (null)\nAccount active Yes\n\
-    Account expires Never"
+    Account expires 1/1/2022"
+
+FAKE_NET_COMMAND5 = "The request will be processed at a domain controller for domain de.bosch.com\
+    \n\n\n\nUser name FET7RT Full Name John Doe (EB-DB/ENG3)\n\
+    Comment 208489\nUser's comment 4975140\nCountry/region code (null)\nAccount active Yes\n\
+    Account expires 1/1/2024"
