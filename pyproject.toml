@@ -1,4 +1,4 @@
-+[tool.poetry]
+[tool.poetry]
 name = "nt-users-tool"
 version = "0.1.0"
 description = ""
@@ -8,6 +8,7 @@ packages = [{include = "nt_users_tool", from = "src"}]
 
 [tool.poetry.dependencies]
 python = "^3.8"
+pyyaml = "^6.0"
 openpyxl = "^3.0.10"
 
 [tool.poetry.scripts]

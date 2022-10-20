@@ -1,8 +1,24 @@
+from asyncore import read
 from openpyxl import Workbook, load_workbook
 from datetime import date
 
-from constants import *
+from constants import FAKE_NET_COMMAND, FAKE_NET_COMMAND2, FAKE_NET_COMMAND3, FAKE_NET_COMMAND4, SHEET_ALL_USERS, SHEET_EXPIRED, SHEET_EXPIRES_SOON, SHEETS_NAME_LIST, COLUMNS_LIST, MONTHS_TO_EXPIRE
+from net_commands import NTUserInfo, extract_all_nt_user_info
+from read_config import read_config_file, get_config
 
+
+def read_nt_users(worksheet) ->list:
+    """Generates a list of nt_user found in the worksheet.
+
+    :param worksheet: The worksheet with nt_users inside.
+    :return: A list of nt_user (string).
+    """
+    nt_user_id_list = []
+    for row in worksheet.rows:
+        for cell in row:
+            if cell.value != None:
+                nt_user_id_list.append(cell.value)
+    return nt_user_id_list
 
 def create_results_workbook(excel_desired_path: str, sheets_names_list: list):
     """Creates the output excel file according to arguments
@@ -18,65 +34,51 @@ def create_results_workbook(excel_desired_path: str, sheets_names_list: list):
     workbook.save(excel_desired_path)
     workbook.close()
 
+def fill_one_row(worksheet, row_number: int, columns: list, nt_user_info: NTUserInfo):
+    """Fills row_number of columns on the given worksheet, with the info in nt_user_info.
 
-def fill_all_sheets(excel_file_name: str, user_info: list):
-    results = load_workbook(excel_file_name, read_only=False)
+    :param worksheet: The worksheet that needs to be changed.
+    :type worksheet: an openpyxl worksheet object.
+    :param row_number: the row at which the changes happen.
+    :param columns: the range of columns we write on.
+    :param user_info: The information that we are writing.
+    """
+    for i, column in enumerate(columns):
+        worksheet[column + str(row_number)] = nt_user_info[i]
 
-    expired_users_sheet = results[SHEET_EXPIRED]
-    expiring_soon_users_sheet = results[SHEET_EXPIRES_SOON]
-    users_sheet = results[SHEET_ALL_USERS]
+
+def fill_all_sheets(workbook: Workbook, nt_user_info_list: list):
+    expired_users_sheet = workbook[SHEET_EXPIRED]
+    expiring_soon_users_sheet = workbook[SHEET_EXPIRES_SOON]
+    users_sheet = workbook[SHEET_ALL_USERS]
 
     today = date.today()
-    month, year = str(today.month), str(today.year)
+    now_month, now_year = today.month, today.year
 
     all_user_index = 1
     expired_index = 1
     expiring_index = 1
 
-    for user in user_info:
+    for user in nt_user_info_list:
         fill_one_row(users_sheet, all_user_index, COLUMNS_LIST, user)
         all_user_index += 1
 
-        user_day, user_month, user_year = user[EXPIRATION_DATE].split(SLASH)
-        if user_year < year:
+        user_day, user_month, user_year = user.expiration_date.split("/")
+        user_month = int(user_month)
+        user_year = int(user_year)
+        if user_year < now_year:
             fill_one_row(expired_users_sheet, expired_index, COLUMNS_LIST, user)
             expired_index += 1
+        elif user_year == now_year:
+            if user_month == now_month:
+                fill_one_row(expired_users_sheet, expired_index, COLUMNS_LIST, user)
+                expired_index +=1
+            elif user_month - now_month <= MONTHS_TO_EXPIRE:
+                fill_one_row(expiring_soon_users_sheet, expiring_index, COLUMNS_LIST, user)
+                expiring_index +=1
 
-    results.save(excel_file_name)
-    results.close()
-
-
-def fill_one_row(worksheet, row_number: int, columns: list, user_info: dict):
-    """_summary_
-
-    :param worksheet: _description_
-    :type worksheet: _type_
-    :param row_number: _description_
-    :param columns: _description_
-    :param user_info: _description_
-    """
-
-    keys = list(user_info.keys())
-    for i, column in enumerate(columns):
-        print(column + str(row_number), keys[i], user_info[keys[i]])
-        worksheet[column + str(row_number)] = user_info[keys[i]]
-
-
-def nt_user_list(excel_file_name: str):
-    """Returns the list of nt_user IDs , reading them from the excel file.
-
-    Args:
-        excel_file_name (str): Excel Input filepath
-
-    Returns:
-        list: List of nt_user IDs
-    """
-    workbook = load_workbook(excel_file_name, read_only=True)
-    worksheet = workbook.active
-    nt_user_id_list = []
-    for row in worksheet.rows:
-        for cell in row:
-            if cell.value != None:
-                nt_user_id_list.append(cell.value)
-    workbook.close()
-    return nt_user_id_list
+        elif user_year > now_year:
+            if now_month > user_month:
+                if (user_month - now_month)%12 <= MONTHS_TO_EXPIRE:
+                    fill_one_row(expiring_soon_users_sheet, expiring_index, COLUMNS_LIST, user)
+                    expiring_index +=1

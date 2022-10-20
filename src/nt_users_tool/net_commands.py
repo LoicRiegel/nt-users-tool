@@ -1,6 +1,7 @@
-import os
+from os import popen
 
 from typing import NamedTuple
+
 from constants import LAST_RELEVANT_ELEMENT_POSITION
 
 class NTUserInfo(NamedTuple):
@@ -16,7 +17,7 @@ def get_nt_user_string(nt_user: str) -> str:
     """
     input = nt_user.upper()
     command = (f"net user /domain {input}")
-    response = os.popen(command)
+    response = popen(command)
     string_response = response.read()
     return string_response
 

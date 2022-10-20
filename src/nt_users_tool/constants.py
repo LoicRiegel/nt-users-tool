@@ -1,7 +1,9 @@
-CONFIG_FILE_PATH = "../config.yml"
+CONFIG_FILE_PATH = "./config.yml"
 
 INPUT_FILE = "input_file_path"
 OUTPUT_FILE = "output_file_path"
+
+MONTHS_TO_EXPIRE = 3
 
 SHEET_EXPIRED = "expired_users"
 SHEET_EXPIRES_SOON = "expiring_soon_users"
@@ -35,22 +37,3 @@ FAKE_NET_COMMAND4 = "The request will be processed at a domain controller for do
     \n\n\n\nUser name FET7RT Full Name Fesseler Timo (EB-DB/ENG3)\n\
     Comment 208489\nUser's comment 4975140\nCountry/region code (null)\nAccount active Yes\n\
     Account expires Never"
-
-FAKE_USER_INFO_LIST = [
-    {"user_name": "RIL1RT", "full_name": "RIEGEL LOIC", "expiration_date": "8/1/2023"},
-    {
-        "user_name": "MOB2RT",
-        "full_name": "MOMBRUN ANATOLE",
-        "expiration_date": "1/10/2023",
-    },
-    {
-        "user_name": "ADV8RT",
-        "full_name": "ADVENTURE TIME",
-        "expiration_date": "8/1/2022",
-    },
-    {
-        "user_name": "HAB7RT",
-        "full_name": "JOHN DOE",
-        "expiration_date": "8/1/2020",
-    },
-]
