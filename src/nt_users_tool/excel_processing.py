@@ -1,9 +1,7 @@
-from openpyxl import Workbook, load_workbook
-from datetime import date
+from openpyxl import Workbook
 
-from nt_users_tool.constants import SHEET_ALL_USERS, SHEET_EXPIRED, SHEET_EXPIRES_SOON, SHEETS_NAME_LIST, COLUMNS_LIST, MONTHS_TO_EXPIRE, TWO_YEAR_GAP
-from nt_users_tool.net_commands import NTUserInfo
-from nt_users_tool.nt_user_info import NTUserStatus, evaluate_user_status
+from nt_users_tool.constants import SHEET_ALL_USERS, SHEET_EXPIRED, SHEET_EXPIRES_SOON, SHEETS_NAME_LIST, COLUMNS_LIST
+from nt_users_tool.nt_user_info import NTUserInfo, NTUserStatus, evaluate_user_status
 
 def read_nt_users(worksheet) ->list:
     """Generates a list of nt_user found in the worksheet.

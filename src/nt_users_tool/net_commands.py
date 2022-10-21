@@ -49,7 +49,8 @@ def extract_nt_user_info(net_command_response: str) -> NTUserInfo:
             name = (" ").join([list_of_user_info[index+2].upper(),list_of_user_info[index+3]])
         elif element == 'expires':
             expiration_date = list_of_user_info[index+1]
-            user_day, user_month, user_year = expiration_date.split("/")
+            user_month, user_day, user_year = expiration_date.split("/")
+            print(f"{user_day} / {user_month} / {user_year}")
             break 
     return NTUserInfo(name,nt_user,date(int(user_year),int(user_month),int(user_day)))
 

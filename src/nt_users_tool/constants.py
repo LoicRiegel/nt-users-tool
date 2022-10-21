@@ -5,6 +5,7 @@ INPUT_FILE = "input_file_path"
 DAYS_EXPIRED_LIMIT = 15
 DAYS_EXPIRING_LIMIT = 60
 
+SHEET_INPUT = "nt_users"
 SHEET_EXPIRED = "expired_users"
 SHEET_EXPIRES_SOON = "expiring_soon_users"
 SHEET_ALL_USERS = "all_users"
