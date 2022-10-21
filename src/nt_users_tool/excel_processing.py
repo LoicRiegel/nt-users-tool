@@ -1,9 +1,10 @@
+from typing import List
 from openpyxl import Workbook
 
 from nt_users_tool.constants import SHEET_ALL_USERS, SHEET_EXPIRED, SHEET_EXPIRES_SOON, SHEETS_NAME_LIST, COLUMNS_LIST
 from nt_users_tool.nt_user_info import NTUserInfo, NTUserStatus, evaluate_user_status
 
-def read_nt_users(worksheet) ->list:
+def read_nt_users(worksheet) -> List[str]:
     """Generates a list of nt_user found in the worksheet.
 
     :param worksheet: The worksheet with nt_users inside.
@@ -24,7 +25,7 @@ def create_results_sheets(workbook: Workbook):
     for sheet_name in SHEETS_NAME_LIST:
         workbook.create_sheet(sheet_name)
 
-def fill_one_row(worksheet, row_number: int, columns: list, nt_user_info: NTUserInfo):
+def fill_one_row(worksheet, row_number: int, columns: List[str], nt_user_info: NTUserInfo):
     """Fills row_number of columns on the given worksheet, with the info in nt_user_info.
 
     :param worksheet: The worksheet that needs to be changed.
@@ -37,7 +38,7 @@ def fill_one_row(worksheet, row_number: int, columns: list, nt_user_info: NTUser
         worksheet[column + str(row_number)] = nt_user_info[i]
 
 
-def fill_all_sheets(workbook: Workbook, nt_user_info_list: list):
+def fill_all_sheets(workbook: Workbook, nt_user_info_list: List[NTUserInfo]):
     """Fills all sheets for the given workbook and nt_user info list (via fill_one_row).
 
     :param workbook: The workbook which has all sheets to be modified.

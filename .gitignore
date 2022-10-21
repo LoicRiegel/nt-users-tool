@@ -6,8 +6,6 @@ __pycache__/
 *.py[cod]
 *$py.class
 
-# demo file
-src/temp.py
 # C extensions
 *.so
 

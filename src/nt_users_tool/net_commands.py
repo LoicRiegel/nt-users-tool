@@ -1,8 +1,9 @@
 from os import popen
+from typing import List
 from concurrent.futures import ThreadPoolExecutor
 from datetime import date
 
-from nt_users_tool.constants import FAKE_NET_COMMAND, FAKE_NET_COMMAND3, LAST_RELEVANT_ELEMENT_POSITION
+from nt_users_tool.constants import LAST_RELEVANT_ELEMENT_POSITION
 from nt_users_tool.nt_user_info import NTUserInfo
 
 def get_nt_user_string(nt_user: str) -> str:
@@ -17,8 +18,8 @@ def get_nt_user_string(nt_user: str) -> str:
     string_response = response.read()
     return string_response
 
-def get_all_nt_user_string(list_nt_user: list) -> list:
-    """Performs get_nt_user_string on all elements of list_nt_user.
+def get_all_nt_user_string(list_nt_user: List[str]) -> List[str]:
+    """Performs get_nt_user_string on all elements of list_nt_user using ThreadPoolExecutor
 
     :param list_nt_user: The list of nt_user.
     :return: The list of net command reponse to all elements of list_nt_user.
@@ -53,7 +54,7 @@ def extract_nt_user_info(net_command_response: str) -> NTUserInfo:
             break 
     return NTUserInfo(name,nt_user,date(int(user_year),int(user_month),int(user_day)))
 
-def extract_all_nt_user_info(list_net_command_response: list) -> list:
+def extract_all_nt_user_info(list_net_command_response: List[str]) -> List[NTUserInfo]:
     """Performs extract_nt_user_info on all elements of list_nt_user_string.
 
     :param list_nt_user_string: List of strings that are responses to net commands with nt_users.

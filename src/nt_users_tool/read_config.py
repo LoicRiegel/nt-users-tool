@@ -11,15 +11,12 @@ def read_config_file() -> dict:
         yaml_stream_dict = safe_load(config_file)
         return yaml_stream_dict
 
-def get_config(config_file_dict: dict) -> tuple:
+def get_config(config_file_dict: dict) -> str:
     """Returns the file path of the Excel file:\n
     -Input file\n
 
     :param config_file_dict: Dictionnary with all entries in the file.
-    :return: tuple with the  excel path.
+    :return: str with the  excel path.
     """
     input = config_file_dict[INPUT_FILE]
     return input
-
-anatole = read_config_file
-print(anatole)
