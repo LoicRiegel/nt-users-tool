@@ -1,10 +1,10 @@
 from openpyxl import Workbook, load_workbook
 from sys import exit
 
-from read_config import read_config_file, get_config
-from net_commands import extract_all_nt_user_info, get_all_nt_user_string
-from excel_processing import create_results_sheets, fill_all_sheets, read_nt_users
-from constants import SHEET_INPUT, CONFIG_FILE_PATH
+from nt_users_tool.read_config import read_config_file, get_config
+from nt_users_tool.net_commands import extract_all_nt_user_info, get_all_nt_user_string
+from nt_users_tool.excel_processing import create_results_sheets, fill_all_sheets, read_nt_users
+from nt_users_tool.constants import SHEET_INPUT, CONFIG_FILE_PATH
 
 def main() -> int:
     try:

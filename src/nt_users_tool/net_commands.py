@@ -1,6 +1,5 @@
 from os import popen
-from concurrent.futures import Executor, ThreadPoolExecutor
-from typing import NamedTuple
+from concurrent.futures import ThreadPoolExecutor
 from datetime import date
 
 from nt_users_tool.constants import FAKE_NET_COMMAND, FAKE_NET_COMMAND3, LAST_RELEVANT_ELEMENT_POSITION
@@ -25,8 +24,9 @@ def get_all_nt_user_string(list_nt_user: list) -> list:
     :return: The list of net command reponse to all elements of list_nt_user.
     """
     list_of_nt_user_string = []
-    for nt_user in list_nt_user:
-        list_of_nt_user_string.append(get_nt_user_string(nt_user))
+    with ThreadPoolExecutor as executor:
+        for nt_user in list_nt_user:
+            list_of_nt_user_string.append(executor.submit(get_nt_user_string,nt_user).result())
     return list_of_nt_user_string
 
 def extract_nt_user_info(net_command_response: str) -> NTUserInfo:
@@ -50,7 +50,6 @@ def extract_nt_user_info(net_command_response: str) -> NTUserInfo:
         elif element == 'expires':
             expiration_date = list_of_user_info[index+1]
             user_month, user_day, user_year = expiration_date.split("/")
-            print(f"{user_day} / {user_month} / {user_year}")
             break 
     return NTUserInfo(name,nt_user,date(int(user_year),int(user_month),int(user_day)))
 
