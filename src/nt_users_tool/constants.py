@@ -1,10 +1,9 @@
-CONFIG_FILE_PATH = "./config.yml"
+CONFIG_FILE_PATH = "./config.yaml"
 
 INPUT_FILE = "input_file_path"
-OUTPUT_FILE = "output_file_path"
 
-MONTHS_TO_EXPIRE = 3
-TWO_YEAR_GAP = 2
+DAYS_EXPIRED_LIMIT = 15
+DAYS_EXPIRING_LIMIT = 60
 
 SHEET_EXPIRED = "expired_users"
 SHEET_EXPIRES_SOON = "expiring_soon_users"
@@ -16,7 +15,6 @@ LAST_RELEVANT_ELEMENT_POSITION = 40
 NT_USER_COLUMN = "D"
 NAME_COLUMN = "E"
 EXPIRATION_DATE_COLUMN = "F"
-
 COLUMNS_LIST = [NT_USER_COLUMN, NAME_COLUMN, EXPIRATION_DATE_COLUMN]
 
 FAKE_NET_COMMAND = "The request will be processed at a domain controller for domain de.bosch.com\

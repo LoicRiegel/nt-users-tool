@@ -2,7 +2,7 @@
 name = "nt-users-tool"
 version = "0.1.0"
 description = ""
-authors = ["Loïc Rigel <loic.riegel@outlook.fr>"]
+authors = ["Loïc Riegel <loic.riegel@outlook.fr>"]
 readme = "README.md"
 packages = [{include = "nt_users_tool", from = "src"}]
 

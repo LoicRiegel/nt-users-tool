@@ -1,8 +1,9 @@
 from openpyxl import Workbook, load_workbook
 from datetime import date
 
-from constants import SHEET_ALL_USERS, SHEET_EXPIRED, SHEET_EXPIRES_SOON, SHEETS_NAME_LIST, COLUMNS_LIST, MONTHS_TO_EXPIRE, TWO_YEAR_GAP
-from net_commands import NTUserInfo
+from nt_users_tool.constants import SHEET_ALL_USERS, SHEET_EXPIRED, SHEET_EXPIRES_SOON, SHEETS_NAME_LIST, COLUMNS_LIST, MONTHS_TO_EXPIRE, TWO_YEAR_GAP
+from nt_users_tool.net_commands import NTUserInfo
+from nt_users_tool.nt_user_info import NTUserStatus, evaluate_user_status
 
 def read_nt_users(worksheet) ->list:
     """Generates a list of nt_user found in the worksheet.
@@ -48,9 +49,6 @@ def fill_all_sheets(workbook: Workbook, nt_user_info_list: list):
     expiring_soon_users_sheet = workbook[SHEET_EXPIRES_SOON]
     users_sheet = workbook[SHEET_ALL_USERS]
 
-    today = date.today()
-    now_month, now_year = today.month, today.year
-
     all_user_index = 1
     expired_index = 1
     expiring_index = 1
@@ -58,25 +56,10 @@ def fill_all_sheets(workbook: Workbook, nt_user_info_list: list):
     for user in nt_user_info_list:
         fill_one_row(users_sheet, all_user_index, COLUMNS_LIST, user)
         all_user_index += 1
-
-        user_day, user_month, user_year = user.expiration_date.split("/")
-        user_month = int(user_month)
-        user_year = int(user_year)
-        if user_year < now_year:
+        user_status = evaluate_user_status(user)
+        if user_status == NTUserStatus.EXPIRED:
             fill_one_row(expired_users_sheet, expired_index, COLUMNS_LIST, user)
             expired_index += 1
-        elif user_year == now_year:
-            if user_month <= now_month:
-                fill_one_row(expired_users_sheet, expired_index, COLUMNS_LIST, user)
-                expired_index += 1
-            elif user_month == now_month:
-                fill_one_row(expired_users_sheet, expired_index, COLUMNS_LIST, user)
-                expired_index +=1
-            elif user_month - now_month < MONTHS_TO_EXPIRE:
-                fill_one_row(expiring_soon_users_sheet, expiring_index, COLUMNS_LIST, user)
-                expiring_index +=1
-        elif user_year - now_year < TWO_YEAR_GAP:
-            if now_month > user_month:
-                if (user_month - now_month)%12 <= MONTHS_TO_EXPIRE:
-                    fill_one_row(expiring_soon_users_sheet, expiring_index, COLUMNS_LIST, user)
-                    expiring_index +=1
+        elif user_status == NTUserStatus.EXPIRING_SOON:
+            fill_one_row(expiring_soon_users_sheet, expiring_index, COLUMNS_LIST, user)
+            expiring_index +=1
