@@ -18,12 +18,14 @@ def read_nt_users(worksheet) -> List[str]:
     return nt_user_id_list
 
 def create_results_sheets(workbook: Workbook):
-    """Creates the sheets inside the given workbook according to parameter
+    """Creates the sheets inside the given workbook according to parameter.
+    If they are already present, does nothing.
 
     :param workbook: The workbook in which to add the sheets.
     """
     for sheet_name in SHEETS_NAME_LIST:
-        workbook.create_sheet(sheet_name)
+        if sheet_name not in workbook.sheetnames:
+            workbook.create_sheet(sheet_name)
 
 def fill_one_row(worksheet, row_number: int, columns: List[str], nt_user_info: NTUserInfo):
     """Fills row_number of columns on the given worksheet, with the info in nt_user_info.

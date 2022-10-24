@@ -31,7 +31,6 @@ def evaluate_user_status(nt_user_info: NTUserInfo) -> NTUserStatus:
     :return: A NTUserStatus enum to give to the excel processing module.
     """
     days_to_expiration = (nt_user_info.expiration_date - DATE_NOW).days
-    print(days_to_expiration)
     if days_to_expiration < DAYS_EXPIRED_LIMIT:
         return NTUserStatus.EXPIRED
     elif DAYS_EXPIRED_LIMIT < days_to_expiration < DAYS_EXPIRING_LIMIT:

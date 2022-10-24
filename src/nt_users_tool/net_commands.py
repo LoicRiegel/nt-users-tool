@@ -25,7 +25,7 @@ def get_all_nt_user_string(list_nt_user: List[str]) -> List[str]:
     :return: The list of net command reponse to all elements of list_nt_user.
     """
     list_of_nt_user_string = []
-    with ThreadPoolExecutor as executor:
+    with ThreadPoolExecutor() as executor:
         for nt_user in list_nt_user:
             list_of_nt_user_string.append(executor.submit(get_nt_user_string,nt_user).result())
     return list_of_nt_user_string
