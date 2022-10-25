@@ -1,7 +1,7 @@
 from typing import List
 from openpyxl import Workbook
 
-from nt_users_tool.constants import SHEET_ALL_USERS, SHEET_EXPIRED, SHEET_EXPIRES_SOON, SHEETS_NAME_LIST, COLUMNS_LIST
+from nt_users_tool.constants import COLUMN_WIDTH, SHEET_ALL_USERS, SHEET_EXPIRED, SHEET_EXPIRES_SOON, SHEETS_NAME_LIST, COLUMNS_LIST, NAME_COLUMN, EXPIRATION_DATE_COLUMN
 from nt_users_tool.nt_user_info import NTUserInfo, NTUserStatus, evaluate_user_status
 
 def read_nt_users(worksheet) -> List[str]:
@@ -13,7 +13,7 @@ def read_nt_users(worksheet) -> List[str]:
     nt_user_id_list = []
     for row in worksheet.rows:
         for cell in row:
-            if cell.value != None:
+            if cell.value:
                 nt_user_id_list.append(cell.value)
     return nt_user_id_list
 
@@ -26,6 +26,9 @@ def create_results_sheets(workbook: Workbook):
     for sheet_name in SHEETS_NAME_LIST:
         if sheet_name not in workbook.sheetnames:
             workbook.create_sheet(sheet_name)
+            workbook[sheet_name].column_dimensions[NAME_COLUMN].width = COLUMN_WIDTH 
+            workbook[sheet_name].column_dimensions[EXPIRATION_DATE_COLUMN].width = COLUMN_WIDTH
+
 
 def fill_one_row(worksheet, row_number: int, columns: List[str], nt_user_info: NTUserInfo):
     """Fills row_number of columns on the given worksheet, with the info in nt_user_info.

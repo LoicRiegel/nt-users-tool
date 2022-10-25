@@ -1,3 +1,4 @@
+from time import perf_counter
 from openpyxl import load_workbook
 from sys import exit
 
@@ -31,9 +32,13 @@ def main() -> int:
         exit()
     print(f"Reading worksheet {SHEET_INPUT}.")
     nt_users_list = read_nt_users(ws)
-    print(f"Gathering information from the network.")
+    print("Gathering information from the network...")
+    start = perf_counter()
     net_command_response_list = get_all_nt_user_string(nt_users_list)
+    end = perf_counter()
+    print(f"Information gathered in {end-start} seconds. Filtering.")
     nt_user_info_list = extract_all_nt_user_info(net_command_response_list)
+    print(f"Uploading results to {input}.")
     create_results_sheets(wb)
     fill_all_sheets(wb,nt_user_info_list)
     try:

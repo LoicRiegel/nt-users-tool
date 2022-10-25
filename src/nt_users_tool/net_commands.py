@@ -1,7 +1,8 @@
 from os import popen
 from typing import List
-from concurrent.futures import ThreadPoolExecutor
 from datetime import date
+
+from concurrent.futures import ThreadPoolExecutor, as_completed
 
 from nt_users_tool.constants import LAST_RELEVANT_ELEMENT_POSITION
 from nt_users_tool.nt_user_info import NTUserInfo
@@ -26,8 +27,9 @@ def get_all_nt_user_string(list_nt_user: List[str]) -> List[str]:
     """
     list_of_nt_user_string = []
     with ThreadPoolExecutor() as executor:
-        for nt_user in list_nt_user:
-            list_of_nt_user_string.append(executor.submit(get_nt_user_string,nt_user).result())
+        future_to_net_response = {executor.submit(get_nt_user_string,nt_user): nt_user for nt_user in list_nt_user}
+        for future in as_completed(future_to_net_response):
+            list_of_nt_user_string.append(future.result())
     return list_of_nt_user_string
 
 def extract_nt_user_info(net_command_response: str) -> NTUserInfo:
