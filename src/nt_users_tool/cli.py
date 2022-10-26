@@ -8,6 +8,13 @@ from nt_users_tool.excel_processing import create_results_sheets, fill_all_sheet
 from nt_users_tool.constants import SHEET_INPUT, CONFIG_FILE_PATH
 
 def main() -> int:
+    """The main functions takes an excel file with a list of nt_users as input.
+    It runs the net command /domain for each nt_user and generates multiple sheets to portray the current state of each user.
+    It also creates a table on the last sheet to easily sort through.
+    Everything is saved on the same input document.
+
+    :return: Returns 0 for standard practice.
+    """
     print("Starting nt_user verification.")
     try:
         dict_conf = read_config_file()
