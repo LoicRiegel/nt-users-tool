@@ -1,7 +1,7 @@
 from typing import List
 from openpyxl import Workbook
 
-from nt_users_tool.constants import COLUMN_WIDTH, SHEET_ALL_USERS, SHEET_EXPIRED, SHEET_EXPIRES_SOON, SHEETS_NAME_LIST, COLUMNS_LIST, NAME_COLUMN, EXPIRATION_DATE_COLUMN
+from nt_users_tool.constants import COLUMN_WIDTH, FIRST_COLUMN, NUMBER_OF_COLUMNS, SHEET_ALL_USERS, SHEET_EXPIRED, SHEET_EXPIRES_15, SHEET_EXPIRES_30, SHEET_EXPIRES_60, SHEETS_NAME_LIST, COLUMNS_LIST, NAME_COLUMN, EXPIRATION_DATE_COLUMN
 from nt_users_tool.nt_user_info import NTUserInfo, NTUserStatus, evaluate_user_status
 
 def read_nt_users(worksheet) -> List[str]:
@@ -24,6 +24,9 @@ def create_results_sheets(workbook: Workbook):
     :param workbook: The workbook in which to add the sheets.
     """
     for sheet_name in SHEETS_NAME_LIST:
+        if sheet_name in workbook.sheetnames:
+            old_ws = workbook[sheet_name]
+            old_ws.delete_cols(FIRST_COLUMN, NUMBER_OF_COLUMNS)  
         if sheet_name not in workbook.sheetnames:
             workbook.create_sheet(sheet_name)
             workbook[sheet_name].column_dimensions[NAME_COLUMN].width = COLUMN_WIDTH 
@@ -50,12 +53,16 @@ def fill_all_sheets(workbook: Workbook, nt_user_info_list: List[NTUserInfo]):
     :param nt_user_info_list: The list of NTUserInfo objects containing information.
     """
     expired_users_sheet = workbook[SHEET_EXPIRED]
-    expiring_soon_users_sheet = workbook[SHEET_EXPIRES_SOON]
+    expiring_15_users_sheet = workbook[SHEET_EXPIRES_15]
+    expiring_30_users_sheet = workbook[SHEET_EXPIRES_30]
+    expiring_60_users_sheet = workbook[SHEET_EXPIRES_60]
     users_sheet = workbook[SHEET_ALL_USERS]
 
     all_user_index = 1
     expired_index = 1
-    expiring_index = 1
+    expiring_15_index = 1
+    expiring_30_index = 1
+    expiring_60_index = 1
 
     for user in nt_user_info_list:
         fill_one_row(users_sheet, all_user_index, COLUMNS_LIST, user)
@@ -64,6 +71,12 @@ def fill_all_sheets(workbook: Workbook, nt_user_info_list: List[NTUserInfo]):
         if user_status == NTUserStatus.EXPIRED:
             fill_one_row(expired_users_sheet, expired_index, COLUMNS_LIST, user)
             expired_index += 1
-        elif user_status == NTUserStatus.EXPIRING_SOON:
-            fill_one_row(expiring_soon_users_sheet, expiring_index, COLUMNS_LIST, user)
-            expiring_index +=1
+        elif user_status == NTUserStatus.EXPIRING_15_DAYS:
+            fill_one_row(expiring_15_users_sheet, expiring_15_index, COLUMNS_LIST, user)
+            expiring_15_index +=1
+        elif user_status == NTUserStatus.EXPIRING_30_DAYS:
+            fill_one_row(expiring_30_users_sheet, expiring_30_index, COLUMNS_LIST, user)
+            expiring_30_index += 1
+        elif user_status == NTUserStatus.EXPIRING_60_DAYS:
+            fill_one_row(expiring_60_users_sheet, expiring_60_index, COLUMNS_LIST, user)
+            expiring_60_index += 1

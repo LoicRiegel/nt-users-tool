@@ -2,7 +2,7 @@ from typing import NamedTuple
 from datetime import date
 from enum import Enum
 
-from nt_users_tool.constants import DAYS_EXPIRED_LIMIT, DAYS_EXPIRING_LIMIT
+from nt_users_tool.constants import DAYS_EXPIRED_LIMIT, DAYS_EXPIRING_15_LIMIT, DAYS_EXPIRING_30_LIMIT, DAYS_EXPIRING_60_LIMIT
 
 class NTUserInfo(NamedTuple):
     """Dataclass for a user of the bosch network.
@@ -16,13 +16,15 @@ class NTUserInfo(NamedTuple):
 class NTUserStatus(Enum):
     """Enum for describing possible status of a nt user with regard to its expiration date.
 
-    :param Enum: 3 possibles status : Expired, expiring soon, or valid.
+    :param Enum: 5 possibles status : Expired, expiring soon with 3 categories, or valid.
     """
     EXPIRED = "expired"
-    EXPIRING_SOON = "expiring_soon"
+    EXPIRING_15_DAYS = "expiring 15 days"
+    EXPIRING_30_DAYS = "expiring 30 days"
+    EXPIRING_60_DAYS = "expiring 60 days"
     VALID = "valid"
 
-DATE_NOW = date.today()
+DATE_NOW = date(2022,11,26)
 
 def evaluate_user_status(nt_user_info: NTUserInfo) -> NTUserStatus:
     """Computes the given nt user status with regard to its expiration date.
@@ -31,9 +33,13 @@ def evaluate_user_status(nt_user_info: NTUserInfo) -> NTUserStatus:
     :return: A NTUserStatus enum to give to the excel processing module.
     """
     days_to_expiration = (nt_user_info.expiration_date - DATE_NOW).days
-    if days_to_expiration < DAYS_EXPIRED_LIMIT:
+    if days_to_expiration <= DAYS_EXPIRED_LIMIT:
         return NTUserStatus.EXPIRED
-    elif DAYS_EXPIRED_LIMIT < days_to_expiration < DAYS_EXPIRING_LIMIT:
-        return NTUserStatus.EXPIRING_SOON
+    elif DAYS_EXPIRED_LIMIT < days_to_expiration <= DAYS_EXPIRING_15_LIMIT:
+        return NTUserStatus.EXPIRING_15_DAYS
+    elif DAYS_EXPIRING_15_LIMIT < days_to_expiration <= DAYS_EXPIRING_30_LIMIT:
+        return NTUserStatus.EXPIRING_30_DAYS   
+    elif DAYS_EXPIRING_30_LIMIT < days_to_expiration <= DAYS_EXPIRING_60_LIMIT:
+        return NTUserStatus.EXPIRING_60_DAYS
     else:
         return NTUserStatus.VALID 
