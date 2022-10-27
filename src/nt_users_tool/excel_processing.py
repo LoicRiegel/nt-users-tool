@@ -99,9 +99,8 @@ def create_table_results(ws: worksheet, tablerange: str):
     ws[f"{NT_USER_COLUMN}1"] = TABLE_NT_USER_COLUMN
     ws[f"{EXPIRATION_DATE_COLUMN}1"] = TABLE_EXPIRATION_DATE_COLUMN
     light_style = TableStyleInfo(name = TABLE_STYLE, showRowStripes= True, showColumnStripes= True)
-    try:
-        table = Table(displayName = TABLE_NAME, ref = tablerange)
-    except ValueError:
-        print("Table could not be created because it already exists.")
+    if ws.tables:
+        del ws.tables[TABLE_NAME]
+    table = Table(displayName = TABLE_NAME, ref = tablerange)
     table.tableStyleInfo = light_style
     ws.add_table(table)

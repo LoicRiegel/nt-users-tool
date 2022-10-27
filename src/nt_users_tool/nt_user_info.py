@@ -24,7 +24,7 @@ class NTUserStatus(Enum):
     EXPIRING_60_DAYS = "expiring 60 days"
     VALID = "valid"
 
-DATE_NOW = date(2022,11,26)
+DATE_NOW = date.today()
 
 def evaluate_user_status(nt_user_info: NTUserInfo) -> NTUserStatus:
     """Computes the given nt user status with regard to its expiration date.
