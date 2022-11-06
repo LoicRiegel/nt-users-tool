@@ -1,42 +1,44 @@
+from datetime import date
 from os import popen
 from typing import List
-from datetime import date
-
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
 from nt_users_tool.constants import LAST_RELEVANT_ELEMENT_POSITION
 from nt_users_tool.nt_user_info import NTUserInfo
 
-def get_nt_user_string(nt_user: str) -> str:
-    """Executes a net command with given nt_user and returns the response as a string.
+
+def get_nt_user_command_response(nt_user: str) -> str:
+    """Returns the result of executing the net user command with a given nt user.
 
     :param nt_user: The nt_user that will be used in the net command.
-    :return: The net command response as a string.
+    :return: The net user command entire response as a string.
     """
-    input = nt_user.upper()
-    command = f"net user /domain {input}"
-    response = popen(command)
-    string_response = response.read()
-    return string_response
+    # For security reasons, make sure that the input is only one word
+    nt_user = nt_user.split(" ")[0].upper()
+    command = f"net user /domain {nt_user}"
+    command_response = popen(command).read()
+    return command_response
+
 
 def get_all_nt_user_string(list_nt_user: List[str]) -> List[str]:
-    """Performs get_nt_user_string on all elements of list_nt_user using ThreadPoolExecutor
+    """Returns the results of executing the net user command with a given list of nt users.
 
     :param list_nt_user: The list of nt_user.
-    :return: The list of net command reponse to all elements of list_nt_user.
+    :return: The list of net command reponses.
     """
-    list_of_nt_user_string = []
+    command_respones = []
     with ThreadPoolExecutor() as executor:
-        future_to_net_response = {executor.submit(get_nt_user_string,nt_user): nt_user for nt_user in list_nt_user}
+        future_to_net_response = {executor.submit(get_nt_user_command_response,nt_user): nt_user for nt_user in list_nt_user}
         for future in as_completed(future_to_net_response):
-            list_of_nt_user_string.append(future.result())
-    return list_of_nt_user_string
+            command_respones.append(future.result())
+    return command_respones
+
 
 def extract_nt_user_info(net_command_response: str) -> NTUserInfo:
-    """Extracts relevant data from a string generated with a given nt_user.
+    """Extract relevant data from the nt user command response.
 
-    :param nt_user_string: Net command response as a string with given nt_user. 
-    :return: NTUserInfo (NamedTuple) with name, nt_user and expiration date.
+    :param net_command_response: Net command response. 
+    :return: the extracted nt user information.
     """
     list_response = net_command_response.split()
     list_of_user_info = list_response[:LAST_RELEVANT_ELEMENT_POSITION]
@@ -56,13 +58,14 @@ def extract_nt_user_info(net_command_response: str) -> NTUserInfo:
             break 
     return NTUserInfo(name,nt_user,date(int(user_year),int(user_month),int(user_day)))
 
-def extract_all_nt_user_info(list_net_command_response: List[str]) -> List[NTUserInfo]:
-    """Performs extract_nt_user_info on all elements of list_nt_user_string.
 
-    :param list_nt_user_string: List of strings that are responses to net commands with nt_users.
-    :return: A list of NTUserInfo objects, one for each nt_user in list_nt_user_string.
+def extract_all_nt_user_info(net_command_responses: List[str]) -> List[NTUserInfo]:
+    """Extract and returns the nt user information from a list of net command responses.
+
+    :param net_command_responses: responses to different 'net user' commands.
+    :return: a list of NTUserInfo containing the nt user info extracted from the different command respones.
     """
-    list_of_nt_user_info = []
-    for net_command_response in list_net_command_response:
-        list_of_nt_user_info.append(extract_nt_user_info(net_command_response))
-    return list_of_nt_user_info
+    nt_user_infos = []
+    for net_command_response in net_command_responses:
+        nt_user_infos.append(extract_nt_user_info(net_command_response))
+    return nt_user_infos
