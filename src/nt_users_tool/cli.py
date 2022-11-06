@@ -2,7 +2,7 @@ from time import perf_counter
 from openpyxl import load_workbook
 from sys import exit
 
-from nt_users_tool.read_config import read_config_file, get_config
+from nt_users_tool.read_config import read_config_file, get_input_file
 from nt_users_tool.net_commands import extract_all_nt_user_info, get_all_nt_user_string
 from nt_users_tool.excel_processing import create_results_sheets, fill_all_sheets, read_nt_users
 from nt_users_tool.constants import SHEET_INPUT, CONFIG_FILE_PATH
@@ -22,7 +22,7 @@ def main() -> int:
         print(f"Configuration file {CONFIG_FILE_PATH} cannot be found in current directory. Make sure it is present.")
         exit()
     print(f"Opening {CONFIG_FILE_PATH}.")
-    input = get_config(dict_conf)
+    input = get_input_file(dict_conf)
     try:
         wb = load_workbook(input, read_only=False)
     except FileNotFoundError:
