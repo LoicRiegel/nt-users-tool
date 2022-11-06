@@ -26,6 +26,10 @@ from nt_users_tool.constants import (
 )
 from nt_users_tool.nt_user_info import NTUserInfo, NTUserStatus, evaluate_user_status
 
+
+# Processing input
+
+
 def read_nt_users(worksheet: Worksheet) -> List[str]:
     """Generates a list of nt_user found in the worksheet.
 
@@ -38,6 +42,10 @@ def read_nt_users(worksheet: Worksheet) -> List[str]:
             if cell.value:
                 nt_user_id_list.append(cell.value)
     return nt_user_id_list
+
+
+# Generating output
+
 
 def create_results_sheets(workbook: Workbook):
     """Creates the sheets inside the given workbook according to parameter.
@@ -60,7 +68,6 @@ def fill_one_row(worksheet: Worksheet, row_number: int, columns: List[str], nt_u
     """Fills row_number of columns on the given worksheet, with the info in nt_user_info.
 
     :param worksheet: The worksheet that needs to be changed.
-    :type worksheet: an openpyxl worksheet object.
     :param row_number: the row at which the changes happen.
     :param columns: the range of columns we write on.
     :param user_info: The information that we are writing.
@@ -75,36 +82,30 @@ def fill_all_sheets(workbook: Workbook, nt_user_info_list: List[NTUserInfo]):
     :param workbook: The workbook which has all sheets to be modified.
     :param nt_user_info_list: The list of NTUserInfo objects containing information.
     """
-    expired_users_sheet = workbook[SHEET_EXPIRED]
-    expiring_15_users_sheet = workbook[SHEET_EXPIRES_15]
-    expiring_30_users_sheet = workbook[SHEET_EXPIRES_30]
-    expiring_60_users_sheet = workbook[SHEET_EXPIRES_60]
-    users_sheet = workbook[SHEET_ALL_USERS]
-
     all_users_index = 2
     expired_index = 2
     expiring_15_index = 2
     expiring_30_index = 2
     expiring_60_index = 2
 
-    for user in nt_user_info_list:
-        fill_one_row(users_sheet, all_users_index, COLUMNS_LIST, user)
+    for user_info in nt_user_info_list:
+        fill_one_row(workbook[SHEET_ALL_USERS], all_users_index, COLUMNS_LIST, user_info)
         all_users_index += 1
-        user_status = evaluate_user_status(user)
+        user_status = evaluate_user_status(user_info)
         if user_status == NTUserStatus.EXPIRED:
-            fill_one_row(expired_users_sheet, expired_index, COLUMNS_LIST, user)
+            fill_one_row(workbook[SHEET_EXPIRED], expired_index, COLUMNS_LIST, user_info)
             expired_index += 1
         elif user_status == NTUserStatus.EXPIRING_15_DAYS:
-            fill_one_row(expiring_15_users_sheet, expiring_15_index, COLUMNS_LIST, user)
+            fill_one_row(workbook[SHEET_EXPIRES_15], expiring_15_index, COLUMNS_LIST, user_info)
             expiring_15_index +=1
         elif user_status == NTUserStatus.EXPIRING_30_DAYS:
-            fill_one_row(expiring_30_users_sheet, expiring_30_index, COLUMNS_LIST, user)
+            fill_one_row(workbook[SHEET_EXPIRES_30], expiring_30_index, COLUMNS_LIST, user_info)
             expiring_30_index += 1
         elif user_status == NTUserStatus.EXPIRING_60_DAYS:
-            fill_one_row(expiring_60_users_sheet, expiring_60_index, COLUMNS_LIST, user)
+            fill_one_row(workbook[SHEET_EXPIRES_60], expiring_60_index, COLUMNS_LIST, user_info)
             expiring_60_index += 1
     table_range = f"{NAME_COLUMN}1:{EXPIRATION_DATE_COLUMN}{all_users_index-1}"
-    create_table_results(users_sheet,table_range)
+    create_table_results(workbook[SHEET_ALL_USERS], table_range)
     
 
 def create_table_results(ws: Worksheet, tablerange: str):
