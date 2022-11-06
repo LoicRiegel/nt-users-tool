@@ -1,5 +1,3 @@
-from lib2to3.pgen2.token import NUMBER
-
 CONFIG_FILE_PATH = "./config.yaml"
 
 INPUT_FILE = "input_file_path"
