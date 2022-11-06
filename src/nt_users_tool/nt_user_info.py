@@ -24,7 +24,7 @@ class InvalidUserNameError(Exception):
 
 
 class NTUserInfo(NamedTuple):
-    """Dataclass for a user of the bosch network.
+    """Dataclass for a user of the network.
 
     :param NamedTuple: Full name, nt_user and expiration date (as datetime.date), fetched from net user /domain.
     """
@@ -32,16 +32,16 @@ class NTUserInfo(NamedTuple):
     nt_user: str
     expiration_date: date
 
-class NTUserStatus(Enum):
-    """Enum for describing possible status of a nt user with regard to its expiration date.
 
-    :param Enum: 5 possibles status : Expired, expiring soon with 3 categories, or valid.
-    """
+class NTUserStatus(Enum):
+    """Possible status of an NT user depending on its expiration date."""
+
     EXPIRED = "expired"
     EXPIRING_15_DAYS = "expiring 15 days"
     EXPIRING_30_DAYS = "expiring 30 days"
     EXPIRING_60_DAYS = "expiring 60 days"
     VALID = "valid"
+
 
 def evaluate_user_status(nt_user_info: NTUserInfo) -> NTUserStatus:
     """Computes the given nt user status with regard to its expiration date.
