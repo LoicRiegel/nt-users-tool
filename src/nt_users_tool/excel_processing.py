@@ -1,14 +1,32 @@
 from typing import List
-from openpyxl import Workbook, worksheet
+
+from openpyxl import Workbook
+from openpyxl.worksheet.worksheet import Worksheet
 from openpyxl.worksheet.table import Table, TableStyleInfo
 
-from nt_users_tool.constants import COLUMN_WIDTH, TABLE_EXPIRATION_DATE_COLUMN, TABLE_NAME, TABLE_NAME_COLUMN
-from nt_users_tool.constants import NUMBER_OF_COLUMNS, SHEET_ALL_USERS, SHEET_EXPIRED, SHEET_EXPIRES_15, TABLE_STYLE
-from nt_users_tool.constants import SHEET_EXPIRES_30, SHEET_EXPIRES_60, SHEETS_NAME_LIST, COLUMNS_LIST
-from nt_users_tool.constants import NAME_COLUMN, EXPIRATION_DATE_COLUMN, FIRST_COLUMN, NT_USER_COLUMN, TABLE_NT_USER_COLUMN
+from nt_users_tool.constants import (
+    COLUMN_WIDTH,
+    TABLE_EXPIRATION_DATE_COLUMN,
+    TABLE_NAME,
+    TABLE_NAME_COLUMN,
+    NUMBER_OF_COLUMNS,
+    SHEET_ALL_USERS,
+    SHEET_EXPIRED,
+    SHEET_EXPIRES_15,
+    TABLE_STYLE,
+    SHEET_EXPIRES_30,
+    SHEET_EXPIRES_60,
+    SHEETS_NAME_LIST,
+    COLUMNS_LIST,
+    NAME_COLUMN,
+    EXPIRATION_DATE_COLUMN,
+    FIRST_COLUMN,
+    NT_USER_COLUMN,
+    TABLE_NT_USER_COLUMN
+)
 from nt_users_tool.nt_user_info import NTUserInfo, NTUserStatus, evaluate_user_status
 
-def read_nt_users(worksheet) -> List[str]:
+def read_nt_users(worksheet: Worksheet) -> List[str]:
     """Generates a list of nt_user found in the worksheet.
 
     :param worksheet: The worksheet with nt_users inside.
@@ -31,14 +49,14 @@ def create_results_sheets(workbook: Workbook):
         if sheet_name in workbook.sheetnames:
             old_ws = workbook[sheet_name]
             old_ws.delete_cols(FIRST_COLUMN, NUMBER_OF_COLUMNS)  
-        elif sheet_name not in workbook.sheetnames:
+        else:
             workbook.create_sheet(sheet_name)
             workbook[sheet_name].column_dimensions[NAME_COLUMN].width = COLUMN_WIDTH
             workbook[sheet_name].column_dimensions[NT_USER_COLUMN].width = COLUMN_WIDTH/2 
             workbook[sheet_name].column_dimensions[EXPIRATION_DATE_COLUMN].width = COLUMN_WIDTH
 
 
-def fill_one_row(worksheet: worksheet, row_number: int, columns: List[str], nt_user_info: NTUserInfo):
+def fill_one_row(worksheet: Worksheet, row_number: int, columns: List[str], nt_user_info: NTUserInfo):
     """Fills row_number of columns on the given worksheet, with the info in nt_user_info.
 
     :param worksheet: The worksheet that needs to be changed.
@@ -89,7 +107,7 @@ def fill_all_sheets(workbook: Workbook, nt_user_info_list: List[NTUserInfo]):
     create_table_results(users_sheet,table_range)
     
 
-def create_table_results(ws: worksheet, tablerange: str):
+def create_table_results(ws: Worksheet, tablerange: str):
     """Creates the table of results inside given worksheet for given tablerange.
 
     :param ws: The worksheet you want to create the table in.
