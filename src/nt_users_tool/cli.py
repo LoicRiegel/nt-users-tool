@@ -3,7 +3,7 @@ from time import perf_counter
 
 from openpyxl import load_workbook
 
-from nt_users_tool.nt_user_info import check_nt_user
+from nt_users_tool.nt_user_check import check_nt_user
 from nt_users_tool.read_config import read_config_file, get_input_file
 from nt_users_tool.net_commands import extract_all_nt_user_info, get_all_nt_user_string
 from nt_users_tool.excel_processing import create_results_sheets, fill_all_sheets, read_nt_users
