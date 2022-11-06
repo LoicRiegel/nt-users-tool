@@ -2,8 +2,6 @@ CONFIG_FILE_PATH = "./config.yaml"
 
 INPUT_FILE = "input_file_path"
 
-NT_USER_MAX_LEN = 8  # used for security
-
 DAYS_EXPIRED_LIMIT = 0
 DAYS_EXPIRING_15_LIMIT = 15
 DAYS_EXPIRING_30_LIMIT = 30

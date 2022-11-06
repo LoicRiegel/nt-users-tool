@@ -3,7 +3,6 @@ from time import perf_counter
 
 from openpyxl import load_workbook
 
-from nt_users_tool.nt_user_check import check_nt_user
 from nt_users_tool.read_config import read_config_file, get_input_file
 from nt_users_tool.net_commands import extract_all_nt_user_info, get_all_nt_user_string
 from nt_users_tool.excel_processing import create_results_sheets, fill_all_sheets, read_nt_users
@@ -49,8 +48,6 @@ def main() -> int:
 
     print(f"Reading worksheet {SHEET_INPUT}.")
     nt_users = read_nt_users(ws)
-    for nt_user in nt_users:
-        check_nt_user(nt_user)  # Security check
 
     print("Gathering information from the network...")
     start = perf_counter()
