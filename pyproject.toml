@@ -15,6 +15,12 @@ openpyxl = "^3.0.10"
 ntuserstool = 'nt_users_tool.cli:main'
 
 
+[[tool.poetry.source]]
+name = "repositories.pypi"
+url = "https://pypi.org/"
+default = false
+secondary = false
+
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
