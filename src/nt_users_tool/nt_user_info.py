@@ -6,7 +6,7 @@ from nt_users_tool.constants import (
     DAYS_EXPIRED_LIMIT,
     DAYS_EXPIRING_15_LIMIT,
     DAYS_EXPIRING_30_LIMIT,
-    DAYS_EXPIRING_60_LIMIT;
+    DAYS_EXPIRING_60_LIMIT
 )
 
 _DATE_NOW = date.today()
