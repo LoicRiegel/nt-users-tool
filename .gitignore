@@ -1,6 +1,6 @@
 # To everyone their own
 .vscode/
-
+*.xlsx
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

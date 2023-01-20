@@ -28,7 +28,10 @@ def get_all_nt_user_string(list_nt_user: List[str]) -> List[str]:
     """
     command_respones = []
     with ThreadPoolExecutor() as executor:
-        future_to_net_response = {executor.submit(get_nt_user_command_response,nt_user): nt_user for nt_user in list_nt_user}
+        future_to_net_response = {
+            executor.submit(get_nt_user_command_response, nt_user): nt_user
+            for nt_user in list_nt_user
+        }
         for future in as_completed(future_to_net_response):
             command_respones.append(future.result())
     return command_respones
@@ -37,7 +40,7 @@ def get_all_nt_user_string(list_nt_user: List[str]) -> List[str]:
 def extract_nt_user_info(net_command_response: str) -> NTUserInfo:
     """Extract relevant data from the nt user command response.
 
-    :param net_command_response: Net command response. 
+    :param net_command_response: Net command response.
     :return: the extracted nt user information.
     """
     list_response = net_command_response.split()
@@ -47,16 +50,20 @@ def extract_nt_user_info(net_command_response: str) -> NTUserInfo:
     name = ""
     expiration_date = ""
 
-    for (index,element) in enumerate(list_of_user_info):
-        if element == 'name':
-            nt_user = list_of_user_info[index+1]
-        elif element == 'Name':
-            name = (" ").join([list_of_user_info[index+2].upper(),list_of_user_info[index+3]])
-        elif element == 'expires':
-            expiration_date = list_of_user_info[index+1]
+    for (index, element) in enumerate(list_of_user_info):
+        if element == "name":
+            nt_user = list_of_user_info[index + 1]
+        elif element == "Name":
+            name = (" ").join(
+                [list_of_user_info[index + 2].upper(), list_of_user_info[index + 3]]
+            )
+        elif element == "expires":
+            expiration_date = list_of_user_info[index + 1]
             user_month, user_day, user_year = expiration_date.split("/")
-            break 
-    return NTUserInfo(name,nt_user,date(int(user_year),int(user_month),int(user_day)))
+            break
+    return NTUserInfo(
+        name, nt_user, date(int(user_year), int(user_month), int(user_day))
+    )
 
 
 def extract_all_nt_user_info(net_command_responses: List[str]) -> List[NTUserInfo]:
