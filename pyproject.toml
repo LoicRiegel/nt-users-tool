@@ -7,20 +7,33 @@ readme = "README.md"
 packages = [{include = "nt_users_tool", from = "src"}]
 
 [tool.poetry.dependencies]
-python = "^3.10"
+python = ">=3.8,<=3.10"
+pyyaml = "^6.0"
+openpyxl = "^3.0.10"
+pre-commit = "^3.0.0"
+progress = "^1.6"
+pyinstaller = "^5.7.0"
 
 [tool.poetry.scripts]
 ntuserstool = 'nt_users_tool.cli:main'
 
 
+[[tool.poetry.source]]
+name = "repositories.pypi"
+url = "https://pypi.org/"
+default = false
+secondary = false
+
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
 
-[tool.poetry.dev-dependencies]
+[tool.poetry.group.dev.dependencies]
 pytest = "*"
 pytest-cov = "*"
 pytest-mock = "*"
+black = {version = "^23.1a1", allow-prereleases = false}
+pandas = "^1.5.3"
 
 [tool.pytest.ini_options]
 testpaths = [
