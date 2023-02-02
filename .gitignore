@@ -1,6 +1,6 @@
 # To everyone their own
 .vscode/
-
+*.xlsx
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
@@ -130,3 +130,8 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+# But not these files
+!nt_users_name.xlsx
+!test_nt_users_name_example.xlsx
+!test_nt_users_sorted.xlsx
