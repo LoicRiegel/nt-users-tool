@@ -35,7 +35,8 @@ def get_all_nt_user_string(list_nt_user: List[str]) -> List[str]:
     with Bar("Processing", max=len(list_nt_user)) as bar:
         with ThreadPoolExecutor() as executor:
             future_to_net_response = {
-                executor.submit(get_nt_user_command_response, nt_user): nt_user for nt_user in list_nt_user
+                executor.submit(get_nt_user_command_response, nt_user): nt_user
+                for nt_user in list_nt_user
             }
             for future in as_completed(future_to_net_response):
                 command_respones.append(future.result())
@@ -59,20 +60,34 @@ def extract_nt_user_info(net_command_response: str) -> NTUserInfo:
         if element == "name" or element == "Benutzername":
             nt_user = list_of_user_info[index + 1]
         elif element == "Name":
-            name = (" ").join([list_of_user_info[index + 2].upper(), list_of_user_info[index + 3]])
+            name = (" ").join(
+                [list_of_user_info[index + 2].upper(), list_of_user_info[index + 3]]
+            )
         elif element == "expires":
             expiration_date = list_of_user_info[index + 1]
-            user_month, user_day, user_year = expiration_date.split("/")
+            if "/" in expiration_date:
+                user_month, user_day, user_year = expiration_date.split("/")
+            elif "." in expiration_date:
+                user_day, user_month, user_year = expiration_date.split(".")
+            else:
+                expiration_date = ""
             break
         elif element == "abgelaufen":
             expiration_date = list_of_user_info[index + 1]
-            user_day, user_month, user_year = expiration_date.split(".")
+            if "." in expiration_date:
+                user_day, user_month, user_year = expiration_date.split(".")
+            elif "/" in expiration_date:
+                user_month, user_day, user_year = expiration_date.split("/")
+            else:
+                expiration_date = ""
             break
     # if the user does not have an expiration date, the user name is ivalid and we return an adapted NTUserInfo
     if expiration_date == "":
         return NTUserInfo(name, nt_user, None)
     else:
-        return NTUserInfo(name, nt_user, date(int(user_year), int(user_month), int(user_day)))
+        return NTUserInfo(
+            name, nt_user, date(int(user_year), int(user_month), int(user_day))
+        )
 
 
 def extract_all_nt_user_info(net_command_responses: List[str]) -> List[NTUserInfo]:
